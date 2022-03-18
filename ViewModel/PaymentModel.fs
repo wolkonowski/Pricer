@@ -67,6 +67,11 @@ type PaymentValuationModel(inputs: PaymentValuationInputs) =
         let fxRateKey = sprintf "FX::%s%s" targetCcy tradeCcy
 
         let fxRate = if inputs.Data.ContainsKey fxRateKey then float inputs.Data.[ fxRateKey ] else 1.0 // lookup FX rate
+        let finalValue = (float inputs.Trade.Principal) / fxRate
         let finalCcy = if inputs.Data.ContainsKey fxRateKey then targetCcy else tradeCcy
-        
-        { Value = (float inputs.Trade.Principal) / fxRate; Currency = finalCcy }
+        let timeDiff = inputs.Trade.Expiry - DateTime.Now
+        let years = timeDiff.TotalDays/365.25
+        let rRate = if inputs.Data.ContainsKey "CFG::R" then float inputs.Data.[ "CFG::R" ] else 0.0
+        let V = finalValue/exp(years*rRate)
+
+        { Value = V; Currency = finalCcy }

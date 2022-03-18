@@ -22,6 +22,7 @@ type MainViewModel() =
         data.Add(ConfigurationViewModel { Key = "FX::USDPLN"; Value = "3.76" })
         data.Add(ConfigurationViewModel { Key = "FX::USDEUR"; Value = "0.87" })
         data.Add(ConfigurationViewModel { Key = "FX::EURGBP"; Value = "0.90" })
+        data.Add(ConfigurationViewModel { Key = "CFG::R"; Value = "0.01"})
 
         calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::runs"; Value = "100" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::baseCurrency"; Value = "USD" })
