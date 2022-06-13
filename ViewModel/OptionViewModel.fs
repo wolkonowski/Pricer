@@ -3,11 +3,10 @@
 //Representation of a Payment to the UI
 type OptionViewModel(input : OptionRecord) = 
     inherit ViewModelBase()
-
+    let types = ["European Put";"European Call"]
     let mutable userInput = input
     let mutable value : Money option = None
     let mutable delta : float option = None
-
     member this.OptionName 
         with get() = userInput.OptionName
         and set(x) = 
@@ -46,10 +45,15 @@ type OptionViewModel(input : OptionRecord) =
         and set(x) = 
             delta <- x
             base.Notify("Delta")
-
+    member this.Stock
+        with get() = userInput.Stock
+        and set(x) = 
+                userInput <- {userInput with Stock = x}
+                base.Notify("Stock")
+    member this.Types = types
     // Invoke the valuation based on user input
     member this.Calculate(data : DataConfiguration, calculationParameters : CalculationConfiguration) = 
-        
+        System.Console.WriteLine(this.OptionType)
         //capture inputs
         let optionInputs : OptionValuationInputs = 
             {
@@ -57,9 +61,10 @@ type OptionViewModel(input : OptionRecord) =
                          {
                              OptionName = this.OptionName
                              OptionType = this.OptionType
-                             Expiry    = this.Expiry
-                             Currency  = this.Currency
-                             Principal = this.Principal
+                             Stock =      this.Stock
+                             Expiry    =  this.Expiry
+                             Currency  =  this.Currency
+                             Principal =  this.Principal
                          }
                 Data = data
                 CalculationsParameters = calculationParameters
@@ -70,3 +75,4 @@ type OptionViewModel(input : OptionRecord) =
         //present to the user
         this.Value <- Option.Some (calc.M)
         this.Delta <- Option.Some (calc.Delta)
+        

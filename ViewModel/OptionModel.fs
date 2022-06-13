@@ -17,6 +17,7 @@ type OptionRecord =
     {
         OptionName : string
         OptionType : string
+        Stock : string
         Expiry    : DateTime
         Currency  : string
         Principal : int64
@@ -33,8 +34,9 @@ type OptionRecord =
                               else knownCurrenciesDefault
         
         {
-            OptionName = sprintf "Payment%04d" (OptionRecord.sysRandom.Next(9999))
-            OptionType = "First"
+            OptionName = sprintf "Option%04d" (OptionRecord.sysRandom.Next(9999))
+            OptionType = "European Put"
+            Stock = "NASDAQ::TSLA"
             Expiry    = (DateTime.Now.AddMonths (OptionRecord.sysRandom.Next(1, 6))).Date
             Currency  = knownCurrencies.[ OptionRecord.sysRandom.Next(knownCurrencies.Length) ]
             Principal = int64 (OptionRecord.sysRandom.Next())

@@ -24,10 +24,12 @@ type MainViewModel() =
         data.Add(ConfigurationViewModel { Key = "FX::USDEUR"; Value = "0.87" })
         data.Add(ConfigurationViewModel { Key = "FX::EURGBP"; Value = "0.90" })
         data.Add(ConfigurationViewModel { Key = "CFG::R"; Value = "0.01"})
+        data.Add(ConfigurationViewModel {Key = "NASDAQ::TSLA";Value = "651.30"})
 
         calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::runs"; Value = "100" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::baseCurrency"; Value = "USD" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownCurrencies"; Value = "USD PLN EUR GBP" })
+        calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownMarkets"; Value = "NASDAQ"})
         calculationParameters.Add(ConfigurationViewModel { Key = "methodology::bumpRisk"; Value = "True" })
         calculationParameters.Add(ConfigurationViewModel { Key = "methodology::bumpSize"; Value = "0.0001" })
 

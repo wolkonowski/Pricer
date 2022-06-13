@@ -202,41 +202,53 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- table header -->
 
                         <TextBlock Grid.Row="1" Grid.Column="1" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Trade Name"/>
-                        <TextBlock Grid.Row="1" Grid.Column="2" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Expiry"/>
-                        <TextBlock Grid.Row="1" Grid.Column="3" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Currency"/>
-                        <TextBlock Grid.Row="1" Grid.Column="4" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Right" Text="Principal"/>
-                        <TextBlock Grid.Row="1" Grid.Column="5" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Right" Text="Value"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Trade Type"/>
+                        <TextBlock Grid.Row="1" Grid.Column="3" Width="60" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Stock"/>
+                        <TextBlock Grid.Row="1" Grid.Column="4" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Expiry"/>
+                        <TextBlock Grid.Row="1" Grid.Column="5" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Left" Text="Currency"/>
+                        <TextBlock Grid.Row="1" Grid.Column="6" Width="100" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Right" Text="Principal"/>
+                        <TextBlock Grid.Row="1" Grid.Column="7" Width="160" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Right" Text="Value"/>
+                        <TextBlock Grid.Row="1" Grid.Column="8" Width="60" Margin="4" Style="{DynamicResource MaterialDesignBody2TextBlock}" TextAlignment="Right" Text="Delta"/>
 
                         <!-- items -->
-                        <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" ItemsSource="{Binding Options}" >
+                        <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="9" ItemsSource="{Binding Options}" >
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type vm:OptionViewModel}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="120"/>
                                             <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="150"/>
                                             <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="180"/>
+                                            <ColumnDefinition Width="100"/>
                                         </Grid.ColumnDefinitions>
 
                                         <Button Width="45" Command="{Binding DataContext.RemoveOption, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" CommandParameter="{Binding}" FontSize="10" Margin="3">✖</Button>
                                         <TextBox Grid.Column="1" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding OptionName}"/>
-                                        <TextBox Grid.Column="2" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Expiry}"/>
-                                        <TextBox Grid.Column="3" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Currency}"/>
-                                        <TextBox Grid.Column="4" TextAlignment="Right" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Principal}"/>
-                                        <TextBlock Grid.Column="5" TextAlignment="Right" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding Value, Mode=OneWay, Converter={StaticResource stripOption}}"/>
+                                        <ComboBox Grid.Column="2" Margin="4" ItemsSource="{Binding Types}" SelectedItem="{Binding OptionType}"/>
+                                        <TextBox Grid.Column="3" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Stock}"/>
+                                        <TextBox Grid.Column="4" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Expiry}"/>
+                                        <TextBox Grid.Column="5" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Currency}"/>
+                                        <TextBox Grid.Column="6" TextAlignment="Right" Margin="4" Style="{DynamicResource MaterialDesignTextBox}" Text="{Binding Principal}"/>
+                                        <TextBlock Grid.Column="7" TextAlignment="Right" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding Value, Mode=OneWay, Converter={StaticResource stripOption}}"/>
+                                        <TextBlock Grid.Column="8" TextAlignment="Right" Margin="0" Padding="10" Style="{DynamicResource MaterialDesignBody2TextBlock}" Text="{Binding Delta, Mode=OneWay, Converter={StaticResource stripOption}}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
