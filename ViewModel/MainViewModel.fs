@@ -11,6 +11,7 @@ type MainViewModel() =
     inherit ViewModelBase()
 
     let trades = ObservableCollection<PaymentViewModel>()
+    let options = ObservableCollection<OptionViewModel>()
     let data = ObservableCollection<ConfigurationViewModel>()
     let calculationParameters = ObservableCollection<ConfigurationViewModel>()
 
@@ -31,17 +32,19 @@ type MainViewModel() =
         calculationParameters.Add(ConfigurationViewModel { Key = "methodology::bumpSize"; Value = "0.0001" })
 
     let summary = ObservableCollection<SummaryRow>()
-
-    (* trade commands *)
     let refreshSummary() = 
         summary.Clear()
         
-        trades 
-        |> Seq.choose(fun t -> t.Value) // find correctly evaluated trades
+        let t_val = trades |> Seq.choose(fun t -> t.Value) // find correctly evaluated trades
+        let o_val = options |> Seq.choose(fun o -> o.Value)
+        let merged = Seq.append t_val o_val
+        merged
         |> Seq.groupBy(fun m -> m.Currency)  // group by currency
         |> Seq.map(fun (ccy, v) -> { Currency = ccy; Value = v |> Seq.map (fun m -> m.Value) |> Seq.sum }) // extract values, calculate a sum
         |> Seq.iter(summary.Add) // add to summary page
 
+        
+    (* trade commands *)
     let calculateFun _ = do
             trades |> Seq.iter(fun trade -> trade.Calculate(getDataConfiguration (), getCalculationConfiguration ()))
             refreshSummary()
@@ -55,7 +58,22 @@ type MainViewModel() =
 
     let removeTrade = SimpleCommand(fun trade -> trades.Remove (trade :?> PaymentViewModel) |> ignore)
     let clearTrades = SimpleCommand(fun _ -> trades.Clear () )
+    (* options commands *)
 
+
+    let calculateFunO _ = do
+            options |> Seq.iter(fun option -> option.Calculate(getDataConfiguration (), getCalculationConfiguration ()))
+            refreshSummary()
+
+    let calculateO = SimpleCommand calculateFunO
+
+    let addOption = SimpleCommand(fun _ -> 
+            let currentConfig = getCalculationConfiguration ()
+            OptionRecord.Random currentConfig |> OptionViewModel |> options.Add
+            )
+
+    let removeOption = SimpleCommand(fun option -> options.Remove (option :?> OptionViewModel) |> ignore)
+    let clearOptions = SimpleCommand(fun _ -> options.Clear () )
     (* charting *)
     
     let chartSeries = SeriesCollection()
@@ -87,18 +105,26 @@ type MainViewModel() =
     let addCalcParameterRecord = SimpleCommand (fun _ -> calculationParameters.Add(ConfigurationViewModel { Key = ""; Value = "" }))
     let removeCalcParameterRecord = SimpleCommand (fun record -> calculationParameters.Remove(record :?> ConfigurationViewModel) |> ignore)
     let clearCalcParameterRecord = SimpleCommand (fun _ -> calculationParameters.Clear ())
-
+    let recalculate _ = 
+        calculateFun()
+        calculateFunO()
     (* automatically update summary when dependency data changes (entries added/removed)  *)
     do
         trades.CollectionChanged.Add calculateFun
-        data.CollectionChanged.Add calculateFun
-        calculationParameters.CollectionChanged.Add calculateFun
+        options.CollectionChanged.Add calculateFunO
+        data.CollectionChanged.Add recalculate
+        calculationParameters.CollectionChanged.Add recalculate
 
     (* commands *)
     member this.AddTrade = addTrade 
     member this.RemoveTrade = removeTrade
     member this.ClearTrades = clearTrades
     member this.Calculate = calculate
+
+    member this.AddOption = addOption
+    member this.RemoveOption = removeOption
+    member this.ClearOptions = clearOptions
+    member this.CalculateO = calculateO
 
     member this.AddMarketData = addMarketDataRecord
     member this.RemoveMarketData = removeMarketDataRecord
@@ -111,6 +137,7 @@ type MainViewModel() =
 
     (* data fields *)
     member this.Trades = trades
+    member this.Options = options
     member this.Data = data
     member this.CalculationParameters = calculationParameters
     member this.Summary = summary
