@@ -34,7 +34,12 @@ type OptionViewModel(input : OptionRecord) =
         and set(x) = 
             userInput <- {userInput with Principal = x }
             base.Notify("Principal")
-    
+
+    member this.Amount 
+           with get() = userInput.Amount
+           and set(x) = 
+               userInput <- {userInput with Amount = x }
+               base.Notify("Amount")
     member this.Value
         with get() = value
         and set(x) = 
@@ -57,7 +62,7 @@ type OptionViewModel(input : OptionRecord) =
         //capture inputs
         let optionInputs : OptionValuationInputs = 
             {
-                Trade = 
+                Option = 
                          {
                              OptionName = this.OptionName
                              OptionType = this.OptionType
@@ -65,6 +70,7 @@ type OptionViewModel(input : OptionRecord) =
                              Expiry    =  this.Expiry
                              Currency  =  this.Currency
                              Principal =  this.Principal
+                             Amount = this.Amount
                          }
                 Data = data
                 CalculationsParameters = calculationParameters

@@ -8,6 +8,7 @@ namespace View
         {
             InitializeComponent();
             DataContext = new ViewModel.MainViewModel();
+            this.WindowState = WindowState.Maximized;
 
         }
     }
