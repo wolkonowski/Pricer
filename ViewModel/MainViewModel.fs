@@ -29,6 +29,9 @@ type MainViewModel() =
         data.Add(ConfigurationViewModel {Key = "NASDAQ::TSLA::SG";Value = "0.1"})
 
         calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::runs"; Value = "100" })
+        calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::steps"; Value = "10000" })
+        calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::prefer"; Value = "NO" })
+        calculationParameters.Add(ConfigurationViewModel { Key = "random::seed"; Value = "12345" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::baseCurrency"; Value = "USD" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownCurrencies"; Value = "USD PLN EUR GBP" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownMarkets"; Value = "NASDAQ"})

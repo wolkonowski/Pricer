@@ -2,6 +2,7 @@
 
 open System
 open ViewModel.Gaussians
+open ViewModel.MonteCarlo
 (* A type representing given amount of money in specific currency. Very bare bones, could be extended in various ways. Some examples:
 1. Multiplication by float so that $1 * 100 = $100.
 2. Addition to other Money instance so that $1 + $2 = $3, but 1 zl + $1 = <exception thrown> *)
@@ -108,16 +109,25 @@ type OptionValuationModel(inputs: OptionValuationInputs) =
             let optionSg = inputs.Option.Stock+"::SG"
             let amount = inputs.Option.Amount
             let sg = if inputs.Data.ContainsKey optionSg then float inputs.Data.[ optionSg ] else defSg
+            let MCruns = if inputs.CalculationsParameters.ContainsKey "monteCarlo::runs" then int inputs.CalculationsParameters.[ "monteCarlo::runs" ] else 1 // lookup FX rate
+            let MCsteps = if inputs.CalculationsParameters.ContainsKey "monteCarlo::steps" then int inputs.CalculationsParameters.[ "monteCarlo::steps" ] else 10000 // lookup FX rate
+            let seed = if inputs.CalculationsParameters.ContainsKey "random::seed" then int inputs.CalculationsParameters.[ "random::seed" ] else 12345 // lookup FX rate
+            let preffered = 
+                if inputs.CalculationsParameters.ContainsKey "monteCarlo::prefer" then 
+                    if inputs.CalculationsParameters.[ "monteCarlo::prefer" ]="YES" then true else false
+                else false // lookup FX rate
             let V = 
                 match inputs.Option.OptionType with
-                    | "European Call" -> callPrice S0 finalK rRate sg years
-                    | "European Put" -> putPrice S0 finalK rRate sg years
+                    | "European Call" -> if preffered then MonteCarlo.europeanCall MCruns MCsteps S0 finalK rRate sg years seed else callPrice S0 finalK rRate sg years
+                    | "European Put" -> if preffered then MonteCarlo.europeanPut MCruns MCsteps S0 finalK rRate sg years seed else putPrice S0 finalK rRate sg years
+                    | "American Call" -> MonteCarlo.americanCall MCruns MCsteps S0 finalK rRate sg years seed
+                    | "American Put" -> MonteCarlo.americanPut MCruns MCsteps S0 finalK rRate sg years seed
                     | x -> 0.0
             let delta = 
                 match inputs.Option.OptionType with
                     | "European Call" -> deltaCall S0 finalK rRate sg years
                     | "European Put" -> deltaPut S0 finalK rRate sg years
-                    | x -> 0.0
+                    | x -> Double.NaN
             let money:Money = { Value = V*double amount; Currency = finalCcy;}
             {M=money;Delta = delta}
         else
