@@ -65,23 +65,45 @@ type OptionValuationModel(inputs: OptionValuationInputs) =
     *)
     let Phi x = 
         Gaussians.normcdf x 
-
-    let callPrice (S0:double) (K:double) (r:double) (sg:double) (T:double) =
+        (*
+        
+        Lecture 5
+        
+        *)
+    let EUcallPrice (S0:double) (K:double) (r:double) (sg:double) (T:double) =
         let d1 = ((log(S0/K)) + (r + sg*sg/2.0)*T) / (sg * (sqrt T))
         S0 * Phi d1 - K * (Phi (d1 - sg * sqrt T))*exp (-r*T)
 
-    let putPrice (S0:double) (K:double) (r:double) (sg:double) (T:double) =
+    let EUputPrice (S0:double) (K:double) (r:double) (sg:double) (T:double) =
         let d1 = ((log(S0/K)) + (r + sg*sg/2.0)*T) / (sg * (sqrt T))
         K*exp(-r*T) * Phi (sg * (sqrt T) - d1) - S0 * Phi(-d1)
 
-    let deltaCall (S0:double) (K:double) (r:double) (sg:double) (T:double) = 
+    let EUdeltaCall (S0:double) (K:double) (r:double) (sg:double) (T:double) = 
         let d1 = (log(S0/K) + (r + sg*sg/2.0)*T) / (sg * T)
         Phi (d1)
 
-    let deltaPut (S0:double) (K:double) (r:double) (sg:double) (T:double) = 
+    let EUdeltaPut (S0:double) (K:double) (r:double) (sg:double) (T:double) = 
         let d1 = (log(S0/K) + (r + sg*sg/2.0)*T) / (sg * T)
         -Phi (-d1)
 
+
+        (*
+        http://uu.diva-portal.org/smash/get/diva2:301070/FULLTEXT01.pdf
+        *)
+
+    let AsianGeoCallPrice (S0:double) (K:double) (r:double) (sg:double) (T:double) =
+        let sgg = sg/sqrt(3.0)
+        let b = (r-(sgg*sgg/2.0))/2.0
+        let d1 = ((log(S0/K)) + (b + sgg*sgg/2.0)*T) / (sgg * (sqrt T))
+        let d2 = d1 - (sgg *sqrt(T))
+        S0*exp((b-r)*T)*Phi(d1) - K*exp(-r*T)*Phi(d2)
+
+    let AsianGeoPutPrice (S0:double) (K:double) (r:double) (sg:double) (T:double) = 
+        let sgg = sg/sqrt(3.0)
+        let b = (r-(sgg*sgg/2.0))/2.0
+        let d1 = ((log(S0/K)) + (b + sgg*sgg/2.0)*T) / (sgg * (sqrt T))
+        let d2 = d1 - (sgg *sqrt(T))
+        K*exp(-r*T)*Phi(-d2) - S0*exp((b-r)*T)*Phi(-d1)
 
     member this.Calculate() : OptionPrice = 
         let currency = inputs.Option.Currency
@@ -118,15 +140,19 @@ type OptionValuationModel(inputs: OptionValuationInputs) =
                 else false // lookup FX rate
             let V = 
                 match inputs.Option.OptionType with
-                    | "European Call" -> if preffered then MonteCarlo.europeanCall MCruns MCsteps S0 finalK rRate sg years seed else callPrice S0 finalK rRate sg years
-                    | "European Put" -> if preffered then MonteCarlo.europeanPut MCruns MCsteps S0 finalK rRate sg years seed else putPrice S0 finalK rRate sg years
-                    | "American Call" -> MonteCarlo.americanCall MCruns MCsteps S0 finalK rRate sg years seed
-                    | "American Put" -> MonteCarlo.americanPut MCruns MCsteps S0 finalK rRate sg years seed
+                    | "European Call" -> if preffered then MonteCarlo.europeanCall2 MCruns MCsteps S0 finalK rRate sg years seed else EUcallPrice S0 finalK rRate sg years
+                    | "European Put" -> if preffered then MonteCarlo.europeanPut2 MCruns MCsteps S0 finalK rRate sg years seed else EUputPrice S0 finalK rRate sg years
+                    | "American Call" -> MonteCarlo.americanCall2 MCruns MCsteps S0 finalK rRate sg years seed
+                    | "American Put" -> MonteCarlo.americanPut2 MCruns MCsteps S0 finalK rRate sg years seed
+                    | "Asian Put" -> MonteCarlo.asianPut MCruns MCsteps S0 finalK rRate sg years seed
+                    | "Asian Call" -> MonteCarlo.asianCall MCruns MCsteps S0 finalK rRate sg years seed
+                    | "Asian Geo Put" -> AsianGeoPutPrice S0 finalK rRate sg years
+                    | "Asian Geo Call" -> AsianGeoCallPrice S0 finalK rRate sg years
                     | x -> 0.0
             let delta = 
                 match inputs.Option.OptionType with
-                    | "European Call" -> deltaCall S0 finalK rRate sg years
-                    | "European Put" -> deltaPut S0 finalK rRate sg years
+                    | "European Call" -> EUdeltaCall S0 finalK rRate sg years
+                    | "European Put" -> EUdeltaPut S0 finalK rRate sg years
                     | x -> Double.NaN
             let money:Money = { Value = V*double amount; Currency = finalCcy;}
             {M=money;Delta = delta}
