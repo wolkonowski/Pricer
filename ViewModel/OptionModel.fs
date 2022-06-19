@@ -129,9 +129,10 @@ type OptionValuationModel(inputs: OptionValuationInputs) =
         let finalK = (float inputs.Option.Principal) / fxRate
         let finalCcy = if inputs.Data.ContainsKey fxRateKey then targetCcy else currency
         let timeDiff = inputs.Option.Expiry - DateTime.Now
-        let accept = match inputs.CalculationsParameters.TryFind "valuation::baseCurrency" with
-            | Some x -> x
-            | None -> ""
+        let accept = 
+            match inputs.CalculationsParameters.TryFind "valuation::baseCurrency" with
+                | Some x -> x
+                | None -> ""
         if timeDiff>TimeSpan(0L) && accept=finalCcy then
             let years = timeDiff.TotalDays/365.25
 
@@ -141,9 +142,9 @@ type OptionValuationModel(inputs: OptionValuationInputs) =
             let optionSg = inputs.Option.Stock+"::SG"
             let amount = inputs.Option.Amount
             let sg = if inputs.Data.ContainsKey optionSg then float inputs.Data.[ optionSg ] else defSg
-            let MCruns = if inputs.CalculationsParameters.ContainsKey "monteCarlo::runs" then int inputs.CalculationsParameters.[ "monteCarlo::runs" ] else 1 // lookup FX rate
-            let MCsteps = if inputs.CalculationsParameters.ContainsKey "monteCarlo::steps" then int inputs.CalculationsParameters.[ "monteCarlo::steps" ] else 10000 // lookup FX rate
-            let seed = if inputs.CalculationsParameters.ContainsKey "random::seed" then int inputs.CalculationsParameters.[ "random::seed" ] else 12345 // lookup FX rate
+            let MCruns = if inputs.CalculationsParameters.ContainsKey "monteCarlo::runs" then int inputs.CalculationsParameters.[ "monteCarlo::runs" ] else 1 // lookup 
+            let MCsteps = if inputs.CalculationsParameters.ContainsKey "monteCarlo::steps" then int inputs.CalculationsParameters.[ "monteCarlo::steps" ] else 10000 // lookup 
+            let seed = if inputs.CalculationsParameters.ContainsKey "random::seed" then int inputs.CalculationsParameters.[ "random::seed" ] else 12345 // lookup 
             let preffered = 
                 if inputs.CalculationsParameters.ContainsKey "monteCarlo::prefer" then 
                     if inputs.CalculationsParameters.[ "monteCarlo::prefer" ]="YES" then true else false
