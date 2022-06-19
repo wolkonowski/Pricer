@@ -86,7 +86,17 @@ type OptionValuationModel(inputs: OptionValuationInputs) =
         let d1 = (log(S0/K) + (r + sg*sg/2.0)*T) / (sg * T)
         -Phi (-d1)
 
+    (*
+    
+    UEWr
+    *)
 
+
+    let futuresLong S0 K r T =
+        S0 - K*exp(-r*T)
+
+    let futuresShort S0 K r T = 
+        -futuresLong S0 K r T
         (*
         http://uu.diva-portal.org/smash/get/diva2:301070/FULLTEXT01.pdf
         *)
@@ -148,6 +158,8 @@ type OptionValuationModel(inputs: OptionValuationInputs) =
                     | "Asian Call" -> MonteCarlo.asianCall MCruns MCsteps S0 finalK rRate sg years seed
                     | "Asian Geo Put" -> AsianGeoPutPrice S0 finalK rRate sg years
                     | "Asian Geo Call" -> AsianGeoCallPrice S0 finalK rRate sg years
+                    | "Futures Long" -> futuresLong S0 finalK rRate years
+                    | "Futures Short" -> futuresShort S0 finalK rRate years
                     | x -> 0.0
             let delta = 
                 match inputs.Option.OptionType with

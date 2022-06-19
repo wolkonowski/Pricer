@@ -3,7 +3,7 @@
 //Representation of a Payment to the UI
 type OptionViewModel(input : OptionRecord) = 
     inherit ViewModelBase()
-    let types = ["European Put";"European Call";"American Put";"American Call";"Asian Put";"Asian Call";"Asian Geo Put";"Asian Geo Call"]
+    let types = ["European Put";"European Call";"American Put";"American Call";"Asian Put";"Asian Call";"Asian Geo Put";"Asian Geo Call";"Futures Long";"Futures Short"]
     let mutable userInput = input
     let mutable value : Money option = None
     let mutable delta : float option = None

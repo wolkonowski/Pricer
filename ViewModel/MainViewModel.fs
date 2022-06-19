@@ -27,6 +27,10 @@ type MainViewModel() =
         data.Add(ConfigurationViewModel { Key = "CFG::SIGMA"; Value = "0.10"})
         data.Add(ConfigurationViewModel {Key = "NASDAQ::TSLA";Value = "651.30"})
         data.Add(ConfigurationViewModel {Key = "NASDAQ::TSLA::SG";Value = "0.1"})
+        data.Add(ConfigurationViewModel {Key = "NYSE::XOM";Value = "86.12"})
+        data.Add(ConfigurationViewModel {Key = "NYSE::XOM::SG";Value = "0.05"})
+        data.Add(ConfigurationViewModel {Key = "NYSE::BRK.A";Value = "403150.00"})
+        data.Add(ConfigurationViewModel {Key = "NYSE::BRK.A::SG";Value = "0.01"})
 
         calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::runs"; Value = "100" })
         calculationParameters.Add(ConfigurationViewModel { Key = "monteCarlo::steps"; Value = "10000" })
@@ -34,7 +38,7 @@ type MainViewModel() =
         calculationParameters.Add(ConfigurationViewModel { Key = "random::seed"; Value = "12345" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::baseCurrency"; Value = "USD" })
         calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownCurrencies"; Value = "USD PLN EUR GBP" })
-        calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownMarkets"; Value = "NASDAQ"})
+        calculationParameters.Add(ConfigurationViewModel { Key = "valuation::knownMarkets"; Value = "NASDAQ NYSE"})
         calculationParameters.Add(ConfigurationViewModel { Key = "methodology::bumpRisk"; Value = "True" })
         calculationParameters.Add(ConfigurationViewModel { Key = "methodology::bumpSize"; Value = "0.0001" })
 

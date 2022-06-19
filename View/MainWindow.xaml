@@ -403,6 +403,7 @@
             </materialDesign:Card>
 
             <!-- CHARTS -->
+            <!--
             <materialDesign:Card Grid.Row="6">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -426,7 +427,7 @@
                     Charts
                     </TextBlock>
 
-                    <!-- action buttons -->
+                    action buttons
                     <StackPanel Grid.Column="0" Grid.Row="1">
                         <Button Margin="6,3" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{Binding AddChartSeries}" Content="Add series"/>
                     </StackPanel>
@@ -435,6 +436,7 @@
 
                 </Grid>
             </materialDesign:Card>
+            -->
         </Grid>
     </ScrollViewer>
 </Window>
